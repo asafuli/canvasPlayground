@@ -1,3 +1,4 @@
+//import Gekko from './gekko';
 
 //Globals
 let canvas = document.getElementById("gameScreen");
@@ -25,19 +26,19 @@ let catPosition = {...baseCatPosition};
 let gekkoThumb = document.getElementById('gekkoThumb');
 
 //Functions
-drawGekko = ({x ,y ,w ,h}) => {
+function drawGekko({x ,y ,w ,h}){
   return ctx.drawImage(gekkoImg, x, y, w, h)
 }
-drawCatBoy = ({x ,y ,w ,h}) => {
+function drawCatBoy({x ,y ,w ,h}){
   return ctx.drawImage(catBoyImg, x, y, w, h)
 }
 
-move = (axis,sign) => {
+function move(axis,sign){
   speed = movingSpeed * sign;
   movingAxis = axis;
 };
 
-jump = () => {
+function jump(){
   for (let i = 0; i < 20 ; i++){
     setTimeout(() => {
       ctx.clearRect(0, 0, 800, 500);
@@ -101,7 +102,7 @@ window.addEventListener('keyup', e => stopGekko(e));
   drawGekko(position)
 },false);*/
 
-updateGekko = (deltaTime) => {
+function updateGekko(deltaTime){
   if (!deltaTime) return;
   position[movingAxis] += speed/deltaTime;
 }

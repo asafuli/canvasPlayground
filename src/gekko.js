@@ -18,7 +18,7 @@ export default class Gekko {
   }
   
   
-  createRandMeasurements = () => {
+  createRandMeasurements(){
     return {x: Math.random() * 300, 
             y: Math.random() * 300,
             w: Math.random() * 1000,
