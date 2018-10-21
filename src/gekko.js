@@ -1,13 +1,14 @@
 export default class Gekko {
   
-  constructor(ctx, htmlId, movingSpeed=50, position={x : 200, y : 200, w : 180, h : 180}){
+  constructor(ctx, htmlId, controls = {right: 'ArrowRight', left: 'ArrowLeft', up: 'ArrowUp', down: 'ArrowDown', jump: ' '}, position={x: 200, y: 200, w: 180, h: 180}, movingSpeed=50){
     
     this.ctx = ctx;
     this.image = document.getElementById(htmlId);
-    this.speed = movingSpeed;
+    this.speed = 0;
     this.movingSpeed = movingSpeed;
     this.movingAxis = 'x';
     this.position = {...position};
+    this.controls = {...controls};
     //bindings
     this.move = this.move.bind(this);
     this.jump = this.jump.bind(this);
@@ -44,21 +45,20 @@ export default class Gekko {
   }
   
   checkAction(e){
-    console.log(this.move);
     switch(e.key){
-      case 'ArrowRight':
+      case this.controls.right:
         this.move('x',1);
         break
-      case 'ArrowLeft':
+      case this.controls.left:
         this.move('x',-1);
         break
-      case 'ArrowUp':
+      case this.controls.up:
         this.move('y',-1);
         break
-      case 'ArrowDown':
+      case this.controls.down:
         this.move('y',1);
         break
-      case ' ':
+      case this.controls.jump:
         this.jump();
         break
     }
@@ -66,16 +66,16 @@ export default class Gekko {
   
   stop(e){
     switch(e.key){
-      case 'ArrowRight':
+      case this.controls.right:
         if (this.speed > 0 && this.movingAxis === 'x') this.speed = 0;  
         break
-      case 'ArrowLeft':
+      case this.controls.left:
         if (this.speed < 0 && this.movingAxis === 'x') this.speed = 0;
         break
-      case 'ArrowUp':
+      case this.controls.up:
         if (this.speed < 0 && this.movingAxis === 'y') this.speed = 0;
         break
-      case 'ArrowDown':
+      case this.controls.down:
         if (this.speed > 0 && this.movingAxis === 'y') this.speed = 0;
         break
     }
@@ -89,13 +89,5 @@ export default class Gekko {
     }
     return color;
   }
-  
-  createRandMeasurements(){
-    return {x: Math.random() * 300, 
-            y: Math.random() * 300,
-            w: Math.random() * 1000,
-            h: Math.random() * 1000}
-  }
   */
-
 }

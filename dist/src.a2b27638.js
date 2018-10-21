@@ -126,22 +126,30 @@ var Gekko =
 /*#__PURE__*/
 function () {
   function Gekko(ctx, htmlId) {
-    var movingSpeed = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 50;
+    var controls = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
+      right: 'ArrowRight',
+      left: 'ArrowLeft',
+      up: 'ArrowUp',
+      down: 'ArrowDown',
+      jump: ' '
+    };
     var position = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
       x: 200,
       y: 200,
       w: 180,
       h: 180
     };
+    var movingSpeed = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 50;
 
     _classCallCheck(this, Gekko);
 
     this.ctx = ctx;
     this.image = document.getElementById(htmlId);
-    this.speed = movingSpeed;
+    this.speed = 0;
     this.movingSpeed = movingSpeed;
     this.movingAxis = 'x';
-    this.position = _objectSpread({}, position); //bindings
+    this.position = _objectSpread({}, position);
+    this.controls = _objectSpread({}, controls); //bindings
 
     this.move = this.move.bind(this);
     this.jump = this.jump.bind(this);
@@ -195,26 +203,24 @@ function () {
   }, {
     key: "checkAction",
     value: function checkAction(e) {
-      console.log(this.move);
-
       switch (e.key) {
-        case 'ArrowRight':
+        case this.controls.right:
           this.move('x', 1);
           break;
 
-        case 'ArrowLeft':
+        case this.controls.left:
           this.move('x', -1);
           break;
 
-        case 'ArrowUp':
+        case this.controls.up:
           this.move('y', -1);
           break;
 
-        case 'ArrowDown':
+        case this.controls.down:
           this.move('y', 1);
           break;
 
-        case ' ':
+        case this.controls.jump:
           this.jump();
           break;
       }
@@ -223,19 +229,19 @@ function () {
     key: "stop",
     value: function stop(e) {
       switch (e.key) {
-        case 'ArrowRight':
+        case this.controls.right:
           if (this.speed > 0 && this.movingAxis === 'x') this.speed = 0;
           break;
 
-        case 'ArrowLeft':
+        case this.controls.left:
           if (this.speed < 0 && this.movingAxis === 'x') this.speed = 0;
           break;
 
-        case 'ArrowUp':
+        case this.controls.up:
           if (this.speed < 0 && this.movingAxis === 'y') this.speed = 0;
           break;
 
-        case 'ArrowDown':
+        case this.controls.down:
           if (this.speed > 0 && this.movingAxis === 'y') this.speed = 0;
           break;
       }
@@ -247,13 +253,6 @@ function () {
         color += letters[Math.floor(Math.random() * 16)];
       }
       return color;
-    }
-    
-    createRandMeasurements(){
-      return {x: Math.random() * 300, 
-              y: Math.random() * 300,
-              w: Math.random() * 1000,
-              h: Math.random() * 1000}
     }
     */
 
@@ -273,23 +272,71 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //Globals
 var canvas = document.getElementById("gameScreen");
 var ctx = canvas.getContext("2d");
-var lastTime = 0; //Instantiation
+var lastTime = 0;
+var players = [];
+var gekkoExist = false;
+var catBoyExist = false;
+var yotamExist = false; //thumbnails
 
-var gekko = new _gekko.default(ctx, "gekkoImg"); //Event listeners
+var gekkoThumb = document.getElementById("gekkoThumb");
+var catBoyThumb = document.getElementById("catBoyThumb");
+var yotamThumb = document.getElementById("yotamThumb");
+gekkoThumb.addEventListener('click', function (ev) {
+  addPlayer(ev);
+}, false);
+catBoyThumb.addEventListener('click', function (ev) {
+  addPlayer(ev);
+}, false);
+yotamThumb.addEventListener('click', function (ev) {
+  addPlayer(ev);
+}, false);
 
-window.addEventListener('keydown', function (e) {
-  return gekko.checkAction(e);
-});
-window.addEventListener('keyup', function (e) {
-  return gekko.stop(e);
-});
+function addPlayer(ev) {
+  var newPlayer;
+
+  if (ev.target.id === "gekkoThumb" && !gekkoExist) {
+    newPlayer = new _gekko.default(ctx, "gekkoImg");
+    gekkoExist = true;
+  } else if (ev.target.id === "catBoyThumb" && !catBoyExist) {
+    newPlayer = new _gekko.default(ctx, "catBoyImg", {
+      right: 'd',
+      left: 'a',
+      up: 'w',
+      down: 's',
+      jump: '1'
+    });
+    catBoyExist = true;
+  } else if (ev.target.id === "yotamThumb" && !yotamExist) {
+    newPlayer = new _gekko.default(ctx, "yotamThumb", {
+      right: "'",
+      left: 'l',
+      up: 'p',
+      down: ';',
+      jump: '='
+    });
+    yotamExist = true;
+  } else {
+    alert('Player already exist...');
+    return;
+  }
+
+  window.addEventListener('keydown', function (e) {
+    return newPlayer.checkAction(e);
+  });
+  window.addEventListener('keyup', function (e) {
+    return newPlayer.stop(e);
+  });
+  players.push(newPlayer);
+}
 
 function GameLoop(timestamp) {
   var dt = timestamp - lastTime;
   lastTime = timestamp;
   ctx.clearRect(0, 0, 800, 500);
-  gekko.updatePlayerPosition(dt);
-  gekko.draw();
+  players.map(function (player) {
+    player.updatePlayerPosition(dt);
+    player.draw();
+  });
   requestAnimationFrame(GameLoop);
 } //Initial call
 
@@ -322,7 +369,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62540" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60800" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
