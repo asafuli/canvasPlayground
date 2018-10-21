@@ -1,0 +1,31 @@
+<html lang="en">
+
+    <head>
+        <title>Brick Breaker</title>
+        <meta charset="UTF-8" />
+        <style>
+          #gameScreen{
+            border: 1px solid black;
+            background-color: black;
+          }
+          #gekkoImg{
+            display: none
+          }
+          #catBoyImg{
+            display: none
+          }
+          #gekkoThumb{
+            position: absolute
+          }
+
+        </style>
+      </head>
+      
+      <body>	
+        <img src="assets/images/gekko.png" id="gekkoImg">	
+        <img src="assets/images/Cat_Boy.png" id="catBoyImg">
+        <img src="assets/images/gekko.png" width="48" height="48" id="gekkoThumb">
+        <canvas id="gameScreen" width="800" height="500"></canvas>
+        <script src="src/index.js"></script>
+      </body>
+</html>
