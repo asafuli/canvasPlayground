@@ -4,6 +4,14 @@
         <title>Brick Breaker</title>
         <meta charset="UTF-8" />
         <style>
+          .container {
+           display: flex; /* or inline-flex */
+           background-color:black;
+           flex-flow: row wrap ;
+           justify-content:flex-start;
+           align-items:flex-start;
+         }
+         
           #gameScreen{
             border: 1px solid black;
             background-color: black;
@@ -26,18 +34,24 @@
           #yotamThumb{
             position: absolue
           }
+          #coverThumb{
+            position: absolue
+          }
           
         </style>
       </head>
       
-      <body>	
-        <img src="assets/images/gekko.png" id="gekkoImg">	
-        <img src="assets/images/Cat_Boy.png" id="catBoyImg">
-        <img src="assets/images/yotam.png" id="yotamImg">
-        <img src="assets/images/gekko.png" width="48" height="48" id="gekkoThumb">
-        <img src="assets/images/Cat_Boy.png" width="48" height="48" id="catBoyThumb">
-        <img src="assets/images/yotam.png" width="48" height="48" id="yotamThumb">
-        <canvas id="gameScreen" width="800" height="500"></canvas>
-        <script type="module" src="src/index.js"></script>
+      <body>
+        <div class="container">
+          <img src="assets/images/pjMasksCover.png" width="300" height="100" id="coverImg">
+          <img src="assets/images/gekko.png" id="gekkoImg">	
+          <img src="assets/images/Cat_Boy.png" id="catBoyImg">
+          <img src="assets/images/yotam.png" id="yotamImg">
+          <img src="assets/images/gekko.png" width="100" height="100" id="gekkoThumb">
+          <img src="assets/images/Cat_Boy.png" width="100" height="100" id="catBoyThumb">
+          <img src="assets/images/yotam.png" width="100" height="100" id="yotamThumb">
+          <canvas id="gameScreen" width="1500" height="770"></canvas>
+          <script type="module" src="src/index.js"></script>
+        </div>	
       </body>
 </html>
