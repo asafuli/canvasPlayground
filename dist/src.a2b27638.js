@@ -131,11 +131,12 @@ function () {
       left: 'ArrowLeft',
       up: 'ArrowUp',
       down: 'ArrowDown',
-      jump: ' '
+      jump: ' ',
+      flip: 'Enter'
     };
     var position = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
-      x: 200,
-      y: 200,
+      x: 400,
+      y: 300,
       w: 180,
       h: 180
     };
@@ -149,10 +150,12 @@ function () {
     this.movingSpeed = movingSpeed;
     this.movingAxis = 'x';
     this.position = _objectSpread({}, position);
+    this.rotatePosition = _objectSpread({}, position);
     this.controls = _objectSpread({}, controls); //bindings
 
     this.move = this.move.bind(this);
     this.jump = this.jump.bind(this);
+    this.flip = this.flip.bind(this);
     this.draw = this.draw.bind(this);
     this.updatePlayerPosition = this.updatePlayerPosition.bind(this);
     this.stop = this.stop.bind(this);
@@ -188,7 +191,7 @@ function () {
 
       var _loop = function _loop(i) {
         setTimeout(function () {
-          _this.ctx.clearRect(0, 0, 800, 500);
+          _this.ctx.clearRect(0, 0, 1500, 770);
 
           _this.position.y = i < 10 ? _this.position.y - 10 : _this.position.y + 10;
 
@@ -201,8 +204,48 @@ function () {
       }
     }
   }, {
+    key: "flip",
+    value: function flip() {
+      var _this2 = this;
+
+      var _loop2 = function _loop2(i) {
+        setTimeout(function () {
+          // save the unrotated ctx of the canvas so we can restore it later
+          // the alternative is to untranslate & unrotate after drawing
+          _this2.ctx.clearRect(0, 0, 1500, 770);
+
+          _this2.ctx.save();
+
+          _this2.ctx.clearRect(0, 0, _this2.position.x + _this2.position.w, _this2.position.y + _this2.position.h); // move to the center of the canvas
+
+
+          _this2.ctx.translate(_this2.position.x + _this2.position.w / 2, _this2.position.y + _this2.position.h / 2); // rotate the canvas to the specified degrees
+
+
+          _this2.ctx.rotate(1 * Math.PI / 180);
+
+          _this2.position.x = -_this2.position.w / 2;
+          _this2.position.y = -_this2.position.h / 2; // draw the image
+          // since the ctx is rotated, the image will be rotated also
+
+          _this2.ctx.drawImage(_this2.image, _this2.position.x, _this2.position.y, 180, 180); // we’re done with the rotating so restore the unrotated ctx
+
+
+          if (i === 360) {
+            _this2.ctx.restore();
+          }
+        }, i * 2);
+      };
+
+      for (var i = 0; i < 361; i++) {
+        _loop2(i);
+      }
+    }
+  }, {
     key: "checkAction",
     value: function checkAction(e) {
+      console.log(e.key);
+
       switch (e.key) {
         case this.controls.right:
           this.move('x', 1);
@@ -218,6 +261,10 @@ function () {
 
         case this.controls.down:
           this.move('y', 1);
+          break;
+
+        case this.controls.flip:
+          this.flip();
           break;
 
         case this.controls.jump:
@@ -332,7 +379,7 @@ function addPlayer(ev) {
 function GameLoop(timestamp) {
   var dt = timestamp - lastTime;
   lastTime = timestamp;
-  ctx.clearRect(0, 0, 800, 500);
+  ctx.clearRect(0, 0, 1500, 770);
   players.map(function (player) {
     player.updatePlayerPosition(dt);
     player.draw();
@@ -369,7 +416,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50745" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51369" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

@@ -39,9 +39,7 @@ function addPlayer(ev){
 function GameLoop(timestamp){
   let dt = timestamp - lastTime;
   lastTime = timestamp;
-
-  ctx.clearRect(0, 0, 800, 500);
-
+  ctx.clearRect(0,0,1500, 770);
   players.map(player => {
     player.updatePlayerPosition(dt);
     player.draw();
